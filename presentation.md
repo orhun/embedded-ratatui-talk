@@ -201,18 +201,6 @@ sudo oryx -i wlp3s0
 
 <!-- end_slide -->
 
-<!-- new_lines: 2 -->
-
-![image:width:45%](assets/lethimcook-invert.gif)
-
-<!-- no_footer -->
-
-<!-- end_slide -->
-
-![image:width:100%](assets/real-ratatui.jpg)
-
-<!-- end_slide -->
-
 ![image:width:80%](assets/ratatui-header.png)
 
 <!-- alignment: center -->
@@ -235,33 +223,105 @@ sudo oryx -i wlp3s0
 
 <!-- end_slide -->
 
-```bash +exec
-handlr open https://github.com/openai/codex/pull/629
+```bash +exec +acquire_terminal
+cargo run --manifest-path ratatui/examples/apps/demo2/Cargo.toml
 ```
 
 <!-- end_slide -->
 
-# Example TUI
+# atac
 
 <!-- alignment: center -->
 
-![image:width:90%](assets/openapi-tui.gif)
+Postman-like API client for the terminal.
 
-[](https://github.com/zaghaghi/openapi-tui)
+![image:width:90%](assets/atac.gif)
+
+[](https://github.com/Julien-cpsn/ATAC)
 
 <!-- end_slide -->
 
-# Example TUI
+# doxx
 
 <!-- alignment: center -->
 
-![image:width:90%](assets/yozefu.gif)
+View .docx files in the terminal.
 
-[](https://github.com/MAIF/yozefu)
+![image:width:90%](assets/doxx.gif)
+
+[](https://github.com/bgreenwell/doxx)
 
 <!-- end_slide -->
 
-What else?
+# rebels-in-the-sky
+
+<!-- alignment: center -->
+
+Spacepirates playing basketball across the galaxy
+
+[](https://github.com/ricott1/rebels-in-the-sky)
+
+---
+
+<!-- pause -->
+
+```bash +exec +acquire_terminal
+rebels-in-the-sky
+```
+
+<!-- end_slide -->
+
+# sharad-ratatui
+
+<!-- alignment: center -->
+
+A text-based Shadowrun role-playing game.
+
+[](https://github.com/ProHaller/sharad_ratatui)
+
+---
+
+<!-- pause -->
+
+```bash +exec
+mpv assets/sharad.mp4 > /dev/null 2>&1
+```
+
+<!-- end_slide -->
+
+# grainiac
+
+<!-- alignment: center -->
+
+Granular sampler that has a terminal user interface.
+
+[](https://github.com/christian-grothe/grainiac)
+
+---
+
+<!-- pause -->
+
+```bash +exec
+mpv assets/grainiac.mp4 > /dev/null 2>&1
+```
+
+<!-- pause -->
+
+```bash +exec
+handlr open https://www.youtube.com/watch?v=XzJnMVo1ZkM
+```
+
+<!-- end_slide -->
+
+# tachyonfx
+
+<!-- alignment: center -->
+
+Add shader-like effects to your terminal applications.
+
+[](https://github.com/junkdog/tachyonfx)
+
+---
 
 <!-- pause -->
 
@@ -269,41 +329,83 @@ What else?
 exabind
 ```
 
-<!-- pause -->
-
-```bash +exec
-handlr open https://orhun.dev/ratzilla/demo/
-```
-
-<!-- pause -->
-
-```
-rebels-in-the-sky
-```
-
-<!-- end_slide -->
-
-- Flamelens
-- Gurk
-- Codex
-- Asterion
-- Grainiac
-
 <!-- end_slide -->
 
 <!-- alignment: center -->
 
+<!-- new_lines: 2 -->
+
 ![](assets/rat-demand.gif)
+
+<!-- no_footer -->
 
 _Show me!_
 
 <!-- end_slide -->
 
-<!-- alignment: center -->
+<!-- column_layout: [1, 1] -->
 
-<!-- new_lines: 1 -->
+<!-- column: 0 -->
 
-Easy.
+## Widgets
+
+- Block
+- BarChart
+- Calendar
+- Canvas
+- Chart
+- Gauge
+- LineGauge
+- List
+- Paragraph
+- Scrollbar
+- Sparkline
+- Table
+- Tabs
+- ...
+
+- Anything that implements `Widget` trait
+
+<!-- column: 1 -->
+
+<!-- pause -->
+
+## Key Concepts
+
+- Rendering
+- Layout
+- Event handling
+
+![image:width:60%](assets/ratcopter.gif)
+
+<!-- end_slide -->
+
+### Minimal example
+
+```rust {1-20|5|6|7,16-18|8-11|12-14|1-20} +line_numbers
+use ratatui::crossterm::event::{self, Event};
+use ratatui::{text::Text, Frame};
+
+fn main() -> std::io::Result<()> {
+    let mut terminal = ratatui::init();
+    loop {
+        terminal.draw(draw)?;
+        if matches!(event::read()?, Event::Key(_)) {
+            break;
+        }
+    }
+    ratatui::restore();
+    Ok(())
+}
+
+fn draw(frame: &mut Frame) {
+    frame.render_widget("Hello World!", frame.area());
+}
+```
+
+<!-- end_slide -->
+
+### Even more minimal example
 
 ```rust {1-13|2|3|4-6|8-10|1-13} +line_numbers
 fn main() -> std::io::Result<()> {
@@ -321,34 +423,117 @@ fn main() -> std::io::Result<()> {
 }
 ```
 
+<!-- end_slide -->
+
+### 1. Rendering
+
 <!-- pause -->
 
-_Or cheesy? idk tbh_
+<!-- column_layout: [3, 1] -->
 
-<!-- end_slide -->
+<!-- column: 0 -->
 
-TODO more ratatui concepts
-
-<!-- end_slide -->
-
-## Templates
-
-<!-- alignment: center -->
-
-| Template           | Description                            |
-| ------------------ | -------------------------------------- |
-| Hello World        | A "Hello, World!" example.             |
-| Simple             | A simple example.                      |
-| Simple Async       | A simple async example.                |
-| Event Driven       | An event-driven TUI application.       |
-| Event Driven Async | An async event-driven TUI application. |
-| Component          | A component-based TUI application.     |
-
-```bash
-cargo generate ratatui/templates
+```rust {1-16|1|1,4,9|6,11|1-16} +line_numbers
+let mut toggle = false;
+loop {
+    terminal.draw(|frame: &mut Frame| {
+        if toggle {
+            frame.render_widget(
+                BarChart::default()
+                //...
+            );
+        } else {
+            frame.render_widget(
+                LineGauge::default()
+                //...
+            );
+        }
+    });
+}
 ```
 
+<!-- column: 1 -->
+
+<!-- new_lines: 6 -->
+
+![](assets/rat-dance2.gif)
+
+<!-- end_slide -->
+
+### 2. Layout
+
+<!-- pause -->
+
+<!-- column_layout: [8, 2] -->
+
+<!-- column: 1 -->
+
+<!-- new_lines: 11 -->
+
 ![](assets/rat-point.gif)
+
+<!-- column: 0 -->
+
+```rust {1-9|2|3-7|1-9} +line_numbers
+let layout = Layout::default()
+    .direction(Direction::Horizontal)
+    .constraints(&[
+        Constraint::Length(10),
+        Constraint::Percentage(70),
+        Constraint::Min(5),
+    ])
+    .split(frame.area());
+```
+
+<!-- pause -->
+
+```rust +line_numbers
+let percent =
+  if msg_count > 50 { 80 } else { 50 };
+
+let contraints = &[
+  Constraint::Percentage(percent),
+  Constraint::Percentage(100 - percent)
+];
+```
+
+<!-- end_slide -->
+
+#### Constraints
+
+```bash +exec +acquire_terminal
+cd ratatui
+cargo run -p constraint-explorer
+```
+
+<!-- pause -->
+
+#### Flex
+
+```bash +exec +acquire_terminal
+cd ratatui
+cargo run -p flex
+```
+
+<!-- end_slide -->
+
+### 3. Event Handling
+
+<!-- pause -->
+
+- Backends: `crossterm`, `termion`, `termwiz` & 3rd party
+
+<!-- pause -->
+
+#### Strategies
+
+- Centralized event handling
+- Centralized catching, message passing
+- Distributed event loops/segmented applications
+
+<!-- new_lines: 1 -->
+
+![image:width:25%](assets/rat-ski.gif)
 
 <!-- end_slide -->
 
@@ -422,14 +607,6 @@ Ratatui on `PSP`
 
 <!-- end_slide -->
 
-![image:width:90%](assets/text-based-rpg.gif)
-
-<!-- alignment: center -->
-
-Radioforestrion RPG by `j-g00da` (WIP)
-
-<!-- end_slide -->
-
 <!-- new_lines: 1 -->
 
 We call this:
@@ -489,7 +666,23 @@ pub trait Backend {
 
 <!-- end_slide -->
 
-Ratzilla
+#### Example: Ratzilla
+
+Build terminal-themed web applications with Rust and WebAssembly.
+
+Supports:
+
+- `CanvasBackend`
+- `DomBackend`
+- `WebGl2Backend`
+
+---
+
+<!-- pause -->
+
+```bash +exec
+handlr open https://orhun.dev/ratzilla/demo/
+```
 
 <!-- end_slide -->
 
@@ -507,17 +700,43 @@ _mousefood_!
 
 <!-- end_slide -->
 
-![image:width:90%](assets/ratatui-epd.jpg)
+⚠️ Make sure you have all the tools installed:
+
+```bash
+git clone https://github.com/orhun/embedded-ratatui-workshop
+```
+
+<!-- pause -->
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+source $HOME/.cargo/env
+
+cargo install espup
+espup install
+
+. ~/export-esp.sh
+
+cargo install espflash ldproxy
+```
 
 <!-- end_slide -->
 
 # Know your hardware!
 
-**ESP32** by Espressif Systems
+**ESP32 T-Display**
 
-- Dual-core 32-bit MCU up to 240 MHz with Wi-Fi + Bluetooth
-- 520 KB SRAM, supports external flash/PSRAM
-- Rich I/O: ADC, DAC, SPI, I²C, UART, PWM, touch sensors
+| Feature               | Specification                                 |
+| --------------------- | --------------------------------------------- |
+| MCU                   | ESP32 Xtensa dual-core LX6 microprocessor     |
+| CPU                   | Xtensa dual-core LX6 @ up to 240 MHz          |
+| RAM                   | 520 KB SRAM (typical for ESP32)               |
+| Wireless Connectivity | Wi-Fi 802.11 b/g/n, BL V4.2 + BLE             |
+| Serial Chip           | CH9102                                        |
+| Optional              | Flash: 4M / 16M                               |
+| Onboard Functions     | Buttons: l006 + I007, battery power detection |
+| Display               | 1.14" 135x240px IPS LCD, ST7789V controller   |
 
 <!-- column_layout: [1, 1, 1]-->
 
@@ -591,38 +810,6 @@ rustflags = [ "--cfg",  "espidf_time64"]
 
 <!-- end_slide -->
 
-```bash +exec +acquire_terminal
-esp-generate
-```
-
-<!-- alignment: center -->
-
-[](https://github.com/esp-rs/esp-generate)
-
-Built with **Ratatui**! 🐭
-
-![](assets/rat-spin.gif)
-
-<!-- end_slide -->
-
-<!-- new_lines: 2 -->
-
-<!-- alignment: center -->
-
-Soooo, _crab?_
-
-<!-- pause -->
-
-![image:width:40%](assets/crab-rave.gif)
-
-YES!!!!
-
-<!-- pause -->
-
-_What about rat?_
-
-<!-- end_slide -->
-
 ### Ratatui + embedded-graphics = **Mousefood**
 
 <!-- column_layout: [4, 3] -->
@@ -656,6 +843,25 @@ loop {
 
 <!-- end_slide -->
 
+<!-- alignment: center -->
+
+Try out:
+
+```bash
+cd template
+cargo run --release
+```
+
+Or:
+
+```bash
+espflash flash --monitor apps/binaries/mousefood-demo.bin
+```
+
+![](assets/rat-ski.gif)
+
+<!-- end_slide -->
+
 ### Simulator 🤖
 
 ```rust {1-15|1-8|10|12-13|15|1-15}
@@ -682,32 +888,18 @@ Starts Ratatui with the simulator backend
 
 <!-- end_slide -->
 
-![](assets/rat-ski.gif)
+<!-- alignment: center -->
 
-```bash +exec
-cargo run --manifest-path ../mousefood/Cargo.toml -p simulator
+Run the simulator:
+
+```bash
+cd apps/simulator
+cargo run
 ```
 
-<!-- end_slide -->
+(requires SDL2)
 
-![](assets/are-we-embedded-yet.png)
-
-<!-- alignment: center -->
-
-[](https://youtu.be/QPjojOuhbe8)  
-Ratatui is now `no_std`!
-
-<!-- end_slide -->
-
-<!-- new_lines: 3 -->
-
-<!-- alignment: center -->
-
-# Demo time!
-
-![image:width:40%](assets/rat-dance.gif)
-
-<!-- no_footer -->
+![](assets/rat-ski.gif)
 
 <!-- end_slide -->
 
@@ -846,37 +1038,11 @@ C3 ║─┼───┼─✖─┼───┼───┼───┼──�
 
 <!-- end_slide -->
 
-### Fretboard Tracking
-
-![image:width:75%](assets/tuitar-fretboard-live.gif)
-
-<!-- end_slide -->
-
-### Scale Mode
-
-![image:width:75%](assets/tuitar-fretboard-scale.gif)
-
-<!-- end_slide -->
-
-### Random Mode
-
-![image:width:75%](assets/tuitar-fretboard-random.gif)
-
-<!-- end_slide -->
-
-### Song Mode
-
-![image:width:75%](assets/tuitar-fretboard-song.gif)
-
-<!-- end_slide -->
-
 ## TUItar
 
 ```sh +exec +acquire_terminal
 tuitar
 ```
-
-![image:width:30%](assets/tuitar-qr.png)
 
 <!-- alignment: center -->
 
@@ -932,159 +1098,143 @@ via [](https://github.com/junkdog/tachyonfx)
 
 <!-- end_slide -->
 
-## Challenges
-
-![image:width:80%](assets/ratted-sir.png)
-
-<!-- end_slide -->
-
-### Bigger screen == bigger problems
-
-```
-memory allocation of 153600 bytes failed
-...
-ili9341::graphics_core::<impl embedded_graphics_core::draw_target::DrawTarget for ili9341::Ili9341>::fill_contiguous
-```
-
-- `ST7735`: 160 × 128 ≈ `20 KB` of pixel data.
-- `ILI9341`: 240 × 320 ≈ `150 KB` of pixel data.
-
-<!-- pause -->
-
-```rust
-esp_alloc::heap_allocator!(size: 160 * 1024);
-```
-
-```ini
-CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
-```
-
-<!-- end_slide -->
-
-![image:width:100%](assets/8-bytes-alloc.png)
-
-<!-- pause -->
-
-<!-- jump_to_middle -->
-
-![image:width:100%](assets/rat-boom.gif)
-
-<!-- end_slide -->
-
-### Build hell
-
-Random panics / loadprohibited / semaphore asserts with `opt-level` > 1
-
-<!-- pause -->
-
-```toml
-[profile.release]
-opt-level = 3
-
-[profile.release.package."firmware"]
-opt-level = 1
-
-[profile.dev]
-debug = true
-opt-level = "z"
-```
-
-<!-- pause -->
+<!-- new_lines: 3 -->
 
 <!-- alignment: center -->
 
-Caused by LLVM optimizations + Xtensa backend bugs + undefined behavior (allocation, alignment, lifetimes, etc.)
+I think you have an idea now...
 
 <!-- pause -->
 
-i.e. `pain`
+![image:width:25%](assets/ratatui-spin.gif)
 
-<!-- jump_to_middle -->
-
-![image:width:70%](assets/rat-cry.gif)
-
-<!-- end_slide -->
-
-btw you can watch me suffer
-
-<!-- pause -->
-
-![](assets/livestream-1.png)
-
-<!-- alignment: center -->
-
-<!-- end_slide -->
-
-![](assets/livestream-2.png)
-
-<!-- end_slide -->
-
-![](assets/livestream-3.png)
-
-<!-- end_slide -->
-
-![](assets/livestream-4.png)
-
-<!-- end_slide -->
-
-![](assets/livestream-5.png)
-
-<!-- end_slide -->
-
-![](assets/livestream-6.png)
-
-<!-- end_slide -->
-
-![](assets/livestream-7.png)
-
-<!-- alignment: center -->
-
-[](https://www.youtube.com/@orhundev)
-
-<!-- column_layout: [1, 2, 2, 1 ]-->
-
-<!-- column: 1 -->
-
-![](assets/rat-type.gif)
-
-<!-- column: 2 -->
-
-<!-- new_lines: 1 -->
-
-![](assets/yt.png)
-
-<!-- end_slide -->
-
-### Important note!
-
-<!-- pause -->
-
-<!-- alignment: center -->
-
-![](assets/rat-atm.gif)
-
-![image:width:100%](assets/sponsor-qr.png)
-
-[](https://github.com/sponsors/orhun)
-
-<!-- end_slide -->
-
-<!-- alignment: center -->
+Workshop time!
 
 <!-- no_footer -->
 
-# ありがとうございました
+<!-- end_slide -->
 
-![](assets/rat-ending.gif)
+<!-- new_lines: 2 -->
 
-`https://github.com/orhun`  
-`https://youtube.com/orhundev`
+![image:width:45%](assets/lethimcook.gif)
 
----
-
-✨ Slides: [](https://github.com/orhun/embedded-ratatui-workshop)  
-`P.S. I don't have a rat under my hat!`
+<!-- no_footer -->
 
 <!-- end_slide -->
 
-Workshop time!
+## Check your kitchen setup
+
+```bash
+git clone https://github.com/orhun/embedded-ratatui-workshop
+```
+
+Make sure your tools work before we start cooking!
+
+```bash
+cd template
+cargo run --release
+```
+
+<!-- alignment: center -->
+
+✅ "Ratatui on embedded devices!" on screen
+
+⚠️ If not, check the Troubleshooting section or ask a chef for help.
+
+<!-- end_slide -->
+
+```
+.
+├── build.rs             -> Build script
+├── .cargo
+│   └── config.toml      -> Cargo configuration for ESP32
+├── Cargo.toml           -> Dependencies and metadata
+├── rust-toolchain.toml  -> Specifies Rust toolchain
+├── sdkconfig.defaults   -> ESP-IDF configuration
+└── src
+    ├── button.rs        -> Button handling module
+    ├── lib.rs           -> Module definitions
+    ├── main.rs          -> Main application
+    └── setup.rs         -> Setup and initialization code
+```
+
+<!-- pause -->
+
+<!-- alignment: center -->
+
+We are mainly going to work in `src/main.rs`.
+
+<!-- pause -->
+
+It contains an implementation of `App` trait for the application lifecycle.
+
+<!-- end_slide -->
+
+## Add your own flavor
+
+- Edit the `App::draw()` method.
+
+- Try one of these:
+
+  - Change the text
+  - Add colors or borders
+  - Experiment with layout
+  - Render different widgets
+
+🎨 Minimal widget examples: `https://github.com/ratatui/ratatui/tree/main/ratatui-widgets/examples`
+
+📚 Widgets documentation: `https://docs.rs/ratatui/latest/ratatui/widgets/index.html`
+
+---
+
+To re-flash: `cargo run --release`
+
+<!-- end_slide -->
+
+## Cook your own dish!
+
+Now that you've mastered the basics, create something fun!
+
+🧠 Some ideas:
+
+- Tamagotchi (Rat-agotchi?)
+- Timer / Pomodoro
+- Digital Fortune Cookie
+- Reaction Game (like whack-a-mole)
+- A mini game (like Snake or Tetris)
+- ASCII pixel art (look into `Widget` trait)
+
+<!-- pause -->
+
+---
+
+🧀 Show and tell!
+
+<!-- end_slide -->
+
+<!-- alignment: center -->
+
+# Thank You, Little Chefs! 🐀
+
+_ありがとうございました_
+
+![](assets/rat-ending.gif)
+
+Remember:  
+_“Anyone can cook — and anyone can TUI.”_
+
+<!-- end_slide -->
+
+<!-- alignment: center -->
+
+![image:width:30%](assets/real-ratatui.jpg)
+
+<!-- new_lines: 1 -->
+
+🐭 **Slides:** [](https://github.com/orhun/embedded-ratatui-talk)  
+🧀 **Sponsor:** [](https://github.com/sponsors/orhun)  
+📺 **More rats:** [](https://youtube.com/@orhundev)
+
+✨ See you at the next workshop — and keep cooking.
+
+`P.S. I don't have a rat under my hat!`
