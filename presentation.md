@@ -233,9 +233,9 @@ cargo run --manifest-path ratatui/examples/apps/demo2/Cargo.toml
 
 <!-- alignment: center -->
 
-Postman-like API client for the terminal.
-
 ![image:width:90%](assets/atac.gif)
+
+Postman-like API client for the terminal.
 
 [](https://github.com/Julien-cpsn/ATAC)
 
@@ -245,9 +245,9 @@ Postman-like API client for the terminal.
 
 <!-- alignment: center -->
 
-View .docx files in the terminal.
-
 ![image:width:90%](assets/doxx.gif)
+
+View .docx files in the terminal.
 
 [](https://github.com/bgreenwell/doxx)
 
@@ -327,6 +327,22 @@ Add shader-like effects to your terminal applications.
 
 ```bash +exec +acquire_terminal
 exabind
+```
+
+<!-- end_slide -->
+
+# ratzilla
+
+<!-- alignment: center -->
+
+Build terminal-themed web applications with Rust and WebAssembly.
+
+[](https://github.com/orhun/ratzilla)
+
+![image:width:35%](assets/ratzilla-logo.gif)
+
+```bash +exec
+handlr open https://orhun.dev/ratzilla/demo/
 ```
 
 <!-- end_slide -->
@@ -652,7 +668,7 @@ pub trait Backend {
 
 | Repository                          | Description                                 |
 | ----------------------------------- | ------------------------------------------- |
-| _reubeno_/`ratatui-uefi`            | UEFI                                        |
+| _reubeno_/`tui-uefi`                | UEFI                                        |
 | _j-g00da_/`mousefood`               | embedded-graphics backend                   |
 | _Jesterhearts_/`ratatui-wgpu`       | GPU-accelerated rendering to a buffer       |
 | _gold-silver-copper_/`egui_ratatui` | EGUI widget                                 |
@@ -1197,12 +1213,14 @@ Now that you've mastered the basics, create something fun!
 
 🧠 Some ideas:
 
-- Tamagotchi (Rat-agotchi?)
 - Timer / Pomodoro
-- Digital Fortune Cookie
+- Tamagochi (Rat-agochi?)
+- Digital Fortune Cookie (random quotes)
 - Reaction Game (like whack-a-mole)
 - A mini game (like Snake or Tetris)
 - ASCII pixel art (look into `Widget` trait)
+
+Tip: Use 3rd party widgets (like `tui-big-text`)
 
 <!-- pause -->
 
